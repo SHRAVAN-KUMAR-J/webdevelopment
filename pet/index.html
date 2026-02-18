@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VS Code Pets - Simple Version</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 20px;
+            background: #1e1e1e;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        #pet-container {
+            background: #2d2d2d;
+            border-radius: 10px;
+            padding: 30px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+            text-align: center;
+        }
+        
+        #pet {
+            font-size: 100px;
+            margin-bottom: 20px;
+            transition: transform 0.3s ease;
+            cursor: pointer;
+        }
+        
+        #pet:hover {
+            transform: scale(1.1);
+        }
+        
+        #pet-name {
+            color: #cccccc;
+            font-size: 24px;
+            margin-bottom: 20px;
+        }
+        
+        .controls {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+        
+        button {
+            background: #0e639c;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background 0.2s;
+        }
+        
+        button:hover {
+            background: #1177bb;
+        }
+        
+        #pet-status {
+            color: #cccccc;
+            margin-top: 20px;
+            font-style: italic;
+        }
+        
+        .pet-selector {
+            margin-bottom: 20px;
+        }
+        
+        select {
+            background: #3c3c3c;
+            color: white;
+            border: 1px solid #0e639c;
+            padding: 8px;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+        
+        label {
+            color: #cccccc;
+            margin-right: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div id="pet-container">
+        <div id="pet-name">🐾 My VS Code Pet</div>
+        
+        <div class="pet-selector">
+            <label for="pet-type">Choose your pet:</label>
+            <select id="pet-type" onchange="changePetType()">
+                <option value="🐶">Dog</option>
+                <option value="🐱">Cat</option>
+                <option value="🐠">Fish</option>
+                <option value="🐦">Bird</option>
+                <option value="🐰">Bunny</option>
+                <option value="🦎">Lizard</option>
+            </select>
+        </div>
+        
+        <div id="pet">🐶</div>
+        
+        <div class="controls">
+            <button onclick="feedPet()">🍖 Feed</button>
+            <button onclick="playWithPet()">🎾 Play</button>
+            <button onclick="petPet()">👋 Pet</button>
+            <button onclick="sleepPet()">😴 Sleep</button>
+        </div>
+        
+        <div id="pet-status">I'm hungry! Feed me!</div>
+    </div>
+
+    <script>
+        // Pet state
+        let pet = {
+            type: '🐶',
+            name: 'Buddy',
+            happiness: 50,
+            hunger: 50,
+            energy: 100,
+            isSleeping: false
+        };
+        
+        const petElement = document.getElementById('pet');
+        const statusElement = document.getElementById('pet-status');
+        const typeSelect = document.getElementById('pet-type');
+        
+        function updatePetDisplay() {
+            petElement.textContent = pet.isSleeping ? '💤' : pet.type;
+            updateStatus();
+        }
+        
+        function updateStatus() {
+            if (pet.isSleeping) {
+                statusElement.textContent = 'Zzz... sleeping...';
+            } else {
+                let status = '';
+                if (pet.hunger > 70) status = '😋 Hungry!';
+                else if (pet.happiness < 30) status = '😢 Feeling lonely...';
+                else if (pet.energy < 30) status = '😴 Getting sleepy...';
+                else status = '😊 Happy and playful!';
+                
+                statusElement.textContent = status;
+            }
+        }
+        
+        function changePetType() {
+            pet.type = typeSelect.value;
+            if (!pet.isSleeping) {
+                petElement.textContent = pet.type;
+            }
+        }
+        
+        function feedPet() {
+            if (pet.isSleeping) {
+                statusElement.textContent = 'Shh... pet is sleeping!';
+                return;
+            }
+            
+            pet.hunger = Math.max(0, pet.hunger - 30);
+            pet.happiness = Math.min(100, pet.happiness + 10);
+            
+            petElement.style.transform = 'scale(1.2)';
+            setTimeout(() => {
+                petElement.style.transform = 'scale(1)';
+            }, 200);
+            
+            statusElement.textContent = 'Yum! That was delicious! 🍖';
+        }
+        
+        function playWithPet() {
+            if (pet.isSleeping) {
+                statusElement.textContent = 'Pet is sleeping! Maybe later...';
+                return;
+            }
+            
+            if (pet.energy < 20) {
+                statusElement.textContent = 'Too tired to play... 😴';
+                return;
+            }
+            
+            pet.happiness = Math.min(100, pet.happiness + 20);
+            pet.energy = Math.max(0, pet.energy - 15);
+            pet.hunger = Math.min(100, pet.hunger + 10);
+            
+            // Simple animation
+            let steps = 0;
+            const interval = setInterval(() => {
+                petElement.style.transform = `translateX(${Math.sin(steps) * 10}px)`;
+                steps += 0.5;
+                if (steps > 4) {
+                    clearInterval(interval);
+                    petElement.style.transform = 'translateX(0)';
+                }
+            }, 50);
+            
+            statusElement.textContent = 'Wheee! That was fun! 🎾';
+        }
+        
+        function petPet() {
+            if (pet.isSleeping) {
+                statusElement.textContent = 'Pet stirs a little but keeps sleeping... 💤';
+                return;
+            }
+            
+            pet.happiness = Math.min(100, pet.happiness + 15);
+            
+            // Heart animation
+            const originalText = petElement.textContent;
+            petElement.textContent = '❤️ ' + originalText;
+            setTimeout(() => {
+                petElement.textContent = originalText;
+            }, 500);
+            
+            statusElement.textContent = 'Purrrr... that feels nice! ❤️';
+        }
+        
+        function sleepPet() {
+            if (pet.isSleeping) {
+                // Wake up
+                pet.isSleeping = false;
+                pet.energy = 100;
+                petElement.textContent = pet.type;
+                statusElement.textContent = '*Yawn* Good morning!';
+            } else {
+                // Go to sleep
+                pet.isSleeping = true;
+                petElement.textContent = '💤';
+                statusElement.textContent = 'Sweet dreams... 🌙';
+            }
+        }
+        
+        // Simple needs decay over time
+        setInterval(() => {
+            if (!pet.isSleeping) {
+                pet.hunger = Math.min(100, pet.hunger + 1);
+                pet.happiness = Math.max(0, pet.happiness - 0.5);
+                pet.energy = Math.max(0, pet.energy - 0.3);
+                updateStatus();
+            } else {
+                pet.energy = Math.min(100, pet.energy + 2);
+            }
+        }, 1000);
+        
+        // Initialize
+        updatePetDisplay();
+    </script>
+</body>
+</html>
