@@ -1,8 +1,21 @@
-//wrirting first express code
 const express = require('express');
 const logger = require('./middleware/logger');
 const userRoutes = require('./routes/UserRoute');
+const apiRoutes = require('./routes/apiRoutes');
 const app = express();
+
+// Enable CORS
+app.use((req, res, next) => {
+  res.header('Access-Control-Allow-Origin', '*');
+  res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
+  res.header('Access-Control-Allow-Headers', 'Content-Type');
+  if (req.method === 'OPTIONS') {
+    return res.sendStatus(200);
+  }
+  next();
+});
+
+app.use(express.json());
 app.use(logger);
 const port = 3000;
 /*
@@ -42,6 +55,7 @@ app.get("/users/:id", (req, res) => {
 });
 */
 app.use('/users', userRoutes);
+app.use('/', apiRoutes);
 app.listen(port, () => {
   console.log(`Server is running on http://localhost:${port}`);
 });
