@@ -6,29 +6,48 @@
 <body>
 
 <script>
-let num1 = Number(prompt("Enter first number:"));
+let num1Raw = prompt("Enter first number:");
+let num2Raw = prompt("Enter second number:");
 let operator = prompt("Enter operator (+, -, *, /):");
-let num2 = Number(prompt("Enter second number:"));
 
+const num1 = Number(num1Raw);
+const num2 = Number(num2Raw);
 let result;
+let error = null;
 
-if (operator === "+") {
-    result = num1 + num2;
-} else if (operator === "-") {
-    result = num1 - num2;
-} else if (operator === "*") {
-    result = num1 * num2;
-} else if (operator === "/") {
-    if (num2 === 0) {
-        result = "Cannot divide by zero";
+if (num1Raw === null || num2Raw === null || operator === null) {
+    error = "Operation cancelled.";
+}
+else if (Number.isNaN(num1) || Number.isNaN(num2)) {
+    error = "Invalid number input. Please enter valid numbers.";
+}
+else {
+    operator = operator.trim();
+
+    if (operator === "+") {
+        result = num1 + num2;
+    } else if (operator === "-") {
+        result = num1 - num2;
+    } else if (operator === "*") {
+        result = num1 * num2;
+    } else if (operator === "/") {
+        if (num2 === 0) {
+            error = "Cannot divide by zero.";
+        } else {
+            result = num1 / num2;
+        }
     } else {
-        result = num1 / num2;
+        error = "Invalid operator. Use +, -, *, or /.";
     }
-} else {
-    result = "Invalid operator";
 }
 
-console.log("Result:", result);
+if (error) {
+    document.body.innerHTML = `<h2>Calculator Error</h2><p>${error}</p>`;
+    console.error(error);
+} else {
+    document.body.innerHTML = `<h2>Result: ${result}</h2><p>${num1} ${operator} ${num2} = ${result}</p>`;
+    console.log("Result:", result);
+}
 </script>
 
 </body>
