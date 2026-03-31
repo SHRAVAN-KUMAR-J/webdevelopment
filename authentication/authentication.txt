@@ -1,0 +1,32 @@
+Autentication: Who are You 
+Authorization : what can you access
+
+email:jalushravan@gmail.com
+password: "123456" //wrong
+
+for that use hashing:
+
+Mongodb:
+
+jalushravan_db_user
+jalu@2026
+mongodb+srv://jalushravan_db_user:jalu@2026@projectdemo.vrok9il.mongodb.net/
+
+JWT:
+token : It is a identity card
+we use it for safer authentication 
+
+problem without jwt:
+user logs -> server stores session -> every request check session 
+*server must store session data(memory problem)
+*not scalable for large apps
+*hard to manage in ditributed system
+
+JWT -JSON WEB token
+instead of storing session on server ->store identity in token(cleint side)
+
+why JWT is important?
+1.stateless authentication
+2.secure communication
+3.used everywhere
+4.works perfectly with frontend
